@@ -5,13 +5,6 @@ import re
 import numpy as np
 
 
-#!/usr/bin/env python
-from distutils.core import setup
-from distutils.extension import Extension
-import re
-import numpy as np
-
-
 def get_cython_version():
     """
     Returns:
