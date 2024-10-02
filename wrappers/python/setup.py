@@ -11,7 +11,7 @@ def get_cython_version():
         Version as a pair of ints (major, minor)
 
     Raises:
-        ImportError: Can't load cython or find version
+        ImportError: Can't load Cython or find version
     """
     try:
         # Modern way to get Cython version
@@ -20,9 +20,9 @@ def get_cython_version():
         raise ImportError("Unable to determine Cython version")
 
     match = re.search(r'^([0-9]+)\.([0-9]+)', version)
-    try:
+    if match:
         return [int(g) for g in match.groups()]
-    except AttributeError:
+    else:
         raise ImportError("Invalid Cython version format")
 
 # Only use Cython if it is available, else just use the pre-generated files
