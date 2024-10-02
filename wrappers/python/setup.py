@@ -5,38 +5,48 @@ import re
 import numpy as np
 
 
+#!/usr/bin/env python
+from distutils.core import setup
+from distutils.extension import Extension
+import re
+import numpy as np
+
+
 def get_cython_version():
     """
     Returns:
         Version as a pair of ints (major, minor)
 
     Raises:
-        ImportError: Can't load Cython or find version
+        ImportError: Can't load cython or find version
     """
+    import Cython.Compiler.Main
+
     try:
-        # Modern way to get Cython version
-        version = Cython.__version__
+        # old way, fails for me
+        version = Cython.Compiler.Main.Version.version
     except AttributeError:
-        raise ImportError("Unable to determine Cython version")
+        version = Cython.Compiler.Main.version
 
     match = re.search(r'^([0-9]+)\.([0-9]+)', version)
-    if match:
+    try:
         return [int(g) for g in match.groups()]
-    else:
-        raise ImportError("Invalid Cython version format")
+    except AttributeError:
+        raise ImportError
 
 # Only use Cython if it is available, else just use the pre-generated files
 try:
     cython_version = get_cython_version()
     # Requires Cython version 0.13 and up
     if cython_version[0] == 0 and cython_version[1] < 13:
-        raise ImportError("Cython version too old")
+        raise ImportError
     from Cython.Distutils import build_ext
     source_ext = '.pyx'
     cmdclass = {'build_ext': build_ext}
 except ImportError:
     source_ext = '.c'
     cmdclass = {}
+
 
 ext_modules = [Extension("freenect", ["freenect" + source_ext],
                          libraries=['usb-1.0', 'freenect', 'freenect_sync'],
@@ -49,7 +59,6 @@ ext_modules = [Extension("freenect", ["freenect" + source_ext],
                                              '-I', '/usr/local/include',
                                              '-I', '../c_sync/',
                                              '-I', np.get_include()])]
-
 setup(name='freenect',
       cmdclass=cmdclass,
       ext_modules=ext_modules)
