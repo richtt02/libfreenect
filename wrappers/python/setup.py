@@ -21,7 +21,7 @@ def get_cython_version():
     except AttributeError:
         version = Cython.Compiler.Main.version
 
-    match = re.search('^([0-9]+)\.([0-9]+)', version)
+    match = re.search(r'^([0-9]+)\.([0-9]+)', version)
     try:
         return [int(g) for g in match.groups()]
     except AttributeError:
