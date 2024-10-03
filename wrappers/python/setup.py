@@ -3,6 +3,10 @@ from distutils.core import setup
 from distutils.extension import Extension
 import re
 import numpy as np
+# Add this line to specify the language level
+import sys
+from Cython.Compiler import Options
+Options.language_level = "3"
 
 
 def get_cython_version():
