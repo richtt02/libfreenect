@@ -9,23 +9,22 @@ def get_cython_version():
     """
     Returns:
         Version as a pair of ints (major, minor)
-
+    
     Raises:
         ImportError: Can't load cython or find version
     """
-    import Cython.Compiler.Main
-
     try:
-        # old way, fails for me
-        version = Cython.Compiler.Main.Version.version
-    except AttributeError:
-        version = Cython.Compiler.Main.version
+        import Cython
+        version = Cython.__version__
+    except ImportError:
+        raise ImportError("Cython is not installed")
 
     match = re.search(r'^([0-9]+)\.([0-9]+)', version)
     try:
         return [int(g) for g in match.groups()]
     except AttributeError:
-        raise ImportError
+        raise ImportError("Unable to parse Cython version")
+
 
 # Only use Cython if it is available, else just use the pre-generated files
 try:
